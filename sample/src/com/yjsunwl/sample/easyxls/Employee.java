@@ -1,10 +1,21 @@
 package com.yjsunwl.sample.easyxls;
 
+import com.yjsunwl.easyxls.annotation.ColumnTitle;
+
 public class Employee {
+	@ColumnTitle(columnTitle = "工号", columnIndex = 0)
 	private long id;
+
+	@ColumnTitle(columnTitle = "姓名", columnIndex = 1)
 	private String name;
+
+	@ColumnTitle(columnTitle = "年龄", columnIndex = 2)
 	private int age;
+
+	@ColumnTitle(columnTitle = "职位", columnIndex = 3)
 	private String job;
+
+	@ColumnTitle(columnTitle = "薪资", columnIndex = 4)
 	private double salery;
 
 	public Employee() {

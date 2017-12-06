@@ -14,6 +14,8 @@ import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
+import com.yjsunwl.easyxls.annotation.AnnotationConverter;
+import com.yjsunwl.easyxls.annotation.ColumnAttr;
 import com.yjsunwl.easyxls.utils.ReflectUtils;
 import com.yjsunwl.easyxls.utils.StringUtils;
 
@@ -173,6 +175,25 @@ public class XLSUtils {
 	}
 
 	/**
+	 * 通过注解的方式写excel
+	 * @param clazz 数据类型
+	 * @param dataModels 数据列表
+	 * @param sheetName 
+	 */
+	public <T> void writeExcelByAnnotation(Class<T> clazz, List<T> dataModels,
+			String sheetName) throws Exception {
+		Field[] fields = clazz.getDeclaredFields();
+		ColumnAttr[] columnAttrs = AnnotationConverter.getColumnAttr(fields);
+		String[] titles = new String[columnAttrs.length];
+		String[] fieldNames = new String[columnAttrs.length];
+		for (int i = 0; i < columnAttrs.length; i++) {
+			titles[i] = columnAttrs[i].getTitle();
+			fieldNames[i] = columnAttrs[i].getFieldName();
+		}
+		writeExcel(clazz, dataModels, fieldNames, titles, sheetName);
+	}
+
+	/**
 	 * 根据sheet名称 找到sheetNo
 	 * @param sheetName
 	 * @return sheetNo，如果没有对应名称返回-1
@@ -261,5 +282,45 @@ public class XLSUtils {
 			}
 		}
 		return dataModels;
+	}
+
+	/**
+	 * 注解方式读取excel文件
+	 * @param clazz 数据类型
+	 * @param sheetNo  sheet序号（从0开始）
+	 * @param hasTitle 第一行是否存在标题
+	 * @return javabean数据
+	 */
+	public <T> List<T> readExcelByAnnotation(Class<T> clazz, int sheetNo,
+			boolean hasTitle) throws Exception {
+		Field[] fields = clazz.getDeclaredFields();
+		ColumnAttr[] columnAttrs = AnnotationConverter.getColumnAttr(fields);
+		String[] titles = new String[columnAttrs.length];
+		String[] fieldNames = new String[columnAttrs.length];
+		for (int i = 0; i < columnAttrs.length; i++) {
+			titles[i] = columnAttrs[i].getTitle();
+			fieldNames[i] = columnAttrs[i].getFieldName();
+		}
+		return readExcel(clazz, fieldNames, sheetNo, hasTitle);
+	}
+
+	/**
+	 * 注解方式读取excel文件
+	 * @param clazz 数据类型
+	 * @param sheetName  sheet名称
+	 * @param hasTitle 第一行是否存在标题
+	 * @return javabean数据
+	 */
+	public <T> List<T> readExcelByAnnotation(Class<T> clazz, String sheetName,
+			boolean hasTitle) throws Exception {
+		Field[] fields = clazz.getDeclaredFields();
+		ColumnAttr[] columnAttrs = AnnotationConverter.getColumnAttr(fields);
+		String[] titles = new String[columnAttrs.length];
+		String[] fieldNames = new String[columnAttrs.length];
+		for (int i = 0; i < columnAttrs.length; i++) {
+			titles[i] = columnAttrs[i].getTitle();
+			fieldNames[i] = columnAttrs[i].getFieldName();
+		}
+		return readExcel(clazz, fieldNames, sheetName, hasTitle);
 	}
 }
